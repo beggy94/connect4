@@ -1,6 +1,6 @@
 <?php
 
-class User  {
+class User {
 
 	const OFFLINE = 1;
 	const AVAILABLE = 2;

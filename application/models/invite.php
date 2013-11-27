@@ -1,5 +1,5 @@
 <?php
-class Invite  {
+class Invite {
 	const PENDING = 1;
 	const ACCEPTED = 2;
 	const REJECTED = 3;
