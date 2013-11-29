@@ -28,6 +28,8 @@ class Board extends CI_Controller {
         $user = $this->user_model->get($user->login);
 
         $invite = $this->invite_model->get($user->invite_id);
+        
+        //TODO: Make this page redirect to matchmaking page if user is not playing.
          
         if ($user->user_status_id == User::WAITING) {
             $invite = $this->invite_model->get($user->invite_id);
@@ -35,10 +37,21 @@ class Board extends CI_Controller {
         }
         else if ($user->user_status_id == User::PLAYING) {
             $match = $this->match_model->get($user->match_id);
-            if ($match->user1_id == $user->id)
+            if ($match->user1_id == $user->id) {
                 $otherUser = $this->user_model->getFromId($match->user2_id);
-            else
+                $data["player_no"] = 1;
+            } else {
                 $otherUser = $this->user_model->getFromId($match->user1_id);
+                $data["player_no"] = 2;
+            }
+            $data["board"] =
+                array(array(0,1,0,1,1,0), 
+                       array(0),
+                       array(1),
+                       array(1,0),
+                       array(0,1),
+                       array(),
+                       array());// unserialize(base64_decode($match->board_state));
         }
          
         $data['user']=$user;
