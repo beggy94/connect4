@@ -81,6 +81,7 @@ class Arcade extends CI_Controller {
         $match = new Match();
         $match->user1_id = $user->id;
         $match->user2_id = $hostUser->id;
+        $match->initialize_board();
         $this->match_model->insert($match);
         $matchId = mysql_insert_id();
 

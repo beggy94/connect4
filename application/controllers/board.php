@@ -44,7 +44,7 @@ class Board extends CI_Controller {
                 $otherUser = $this->user_model->getFromId($match->user1_id);
                 $data["player_no"] = 2;
             }
-            $data["board"] =
+            $data["board"] = unserialize(base64_decode($match->board_state));
                 array(array(0,1,0,1,1,0), 
                        array(0),
                        array(1),
@@ -150,6 +150,62 @@ class Board extends CI_Controller {
 
         error:
         echo json_encode(array('status'=>'failure','message'=>$errormsg));
+    }
+    
+    function drop_disk($column) {
+        $this->load->model('user_model');
+        $this->load->model('match_model');
+        
+        $user = $_SESSION['user'];
+        
+        $user = $this->user_model->get($user->login);
+        if ($user->user_status_id != User::PLAYING) {
+            $errormsg="Not in PLAYING state";
+            goto error;
+        }
+        
+        // start transactional mode
+        $this->db->trans_begin();
+        
+        $match = $this->match_model->getExclusive($user->match_id);
+        
+        if ($match->user1_id == $user->id) {
+            $msg = "P1 dropped disk into column $column.";
+            if ($match->drop_disk(1, $column)) {
+                $msg .= "\nP1 won the game!";
+            }
+        }
+        else {
+            $msg = "P2 dropped disk into column $column.";
+            if ($match->drop_disk(2, $column)) {
+                $msg .= "\nP2 won the game!";
+            }
+        }
+        
+        $this->match_model->updateBoard($match->id, $match->board_state);
+        $this->match_model->updateMsgU1($match->id, $msg);
+        $this->match_model->updateMsgU2($match->id, $msg);
+        
+        if ($this->db->trans_status() === FALSE) {
+            $errormsg = "Transaction error";
+            goto transactionerror;
+        }
+         
+        // if all went well commit changes
+        $this->db->trans_commit();
+         
+        echo json_encode(array('status'=>'success','message'=>$msg));
+        return;
+        
+        transactionerror:
+        $this->db->trans_rollback();
+        
+        error:
+        echo json_encode(array('status'=>'failure','message'=>$errormsg));
+    }
+    
+    function leave_game() {
+        redirect("arcade/declineInvitation");
     }
 
 }

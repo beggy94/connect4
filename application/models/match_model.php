@@ -36,6 +36,11 @@ class Match_model extends CI_Model {
         $this->db->where('id',$id);
         return $this->db->update('match',array('u2_msg'=>$msg));
     }
+    
+    function updateBoard($id, $board_state) {
+        $this->db->where("id", $id);
+        return $this->db->update("match", array("board_state" => $board_state));
+    }
 
     function updateStatus($id, $status) {
         $this->db->where('id',$id);

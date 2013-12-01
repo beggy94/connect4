@@ -47,7 +47,14 @@
 						$('[name=conversation]').val(conversation + "\n" + user + ": " + msg);
 						});
 				return false;
-			});	
+			});
+
+			$('.leave-game').click(function() {
+			    var url = "<?= base_url("arcade/declineInvitation") ?>";
+			    $.post(url, null, function(data, status, jqXHR) {
+			        window.location.href = "<?= base_url("arcade/index") ?>";
+			    });
+			});
 		});
 	
 	</script>
@@ -68,13 +75,16 @@
 	?>
 	</div>
 	
+	<?php if (isset($board)) { ?>
 	<table class="game-board">
 	    <tr>
 	    <?php
 	    $chip_color = ($player_no == 1 ? "red" : "black");
+	    $i = 0;
 	    foreach ($board as $column) {
             $column_style = count($column) >= 6 ? "full-column" : "";
-            echo "<th class='$column_style chip-$chip_color'>$chip_color $column_style</th>";
+            echo "<th class='$column_style chip-$chip_color'>" . anchor(base_url("board/drop_disk/$i"), "$chip_color $column_style") . "</th>";
+            $i++;
         }
         ?>
 	    </tr>
@@ -92,6 +102,7 @@
         }
 	    ?>
 	</table>
+	<?php } ?>
 	
 <?php 
 	
@@ -101,6 +112,7 @@
 	echo form_input('msg');
 	echo form_submit('Send','Send');
 	echo form_close();
+	echo anchor(current_url() . "#", "Leave Game", "class='leave-game'");
 	
 ?>
 	

@@ -31,7 +31,7 @@ class Match {
             $board[] = array();
         }
 
-        $board_state = base64_encode(serialize($board));
+        $this->board_state = base64_encode(serialize($board));
     }
 
     /**
@@ -40,7 +40,7 @@ class Match {
      * @param int $player
      * @param int $column
      */
-    public function drop_disk(int $player, int $column) {
+    public function drop_disk($player, $column) {
         if ($column < 0 or $column >= self::BOARD_WIDTH) {
             return false;
         }
@@ -52,12 +52,12 @@ class Match {
             	
             if (count($board[$column]) < self::BOARD_HEIGHT) {
                 // Can only fit 6 disks per column.
-                $board[$column]->push($player);
+                $board[$column][] = $player;
 
-                $win = base::check_victory_state($board, $column);
+                $win = self::check_victory_state($board, $column);
             }
             	
-            $this->board_state = base64_encode(serialize($board_state));
+            $this->board_state = base64_encode(serialize($board));
         }
 
         return $win;
@@ -71,29 +71,46 @@ class Match {
      */
     private static function check_victory_state($board, $column) {
         $row = count($board[$column]) - 1;
+        echo "Column: " . $column;
+        echo "Row: " . $row;
         $player = $board[$column][$row];
+        
+        echo "Horizontally: " . (self::count_consecutive_disks($board, $column - 1, $row, -1, 0, $player)
+                + self::count_consecutive_disks($board, $column + 1, $row, 1, 0, $player));
+        echo "Vertically: " . (self::count_consecutive_disks($board, $column, $row - 1, 0, -1, $player)
+                + self::count_consecutive_disks($board, $column, $row + 1, 0, 1, $player));
+        echo "Upwards: " . (self::count_consecutive_disks($board, $column - 1, $row - 1, -1, -1, $player)
+                        + self::count_consecutive_disks($board, $column + 1, $row + 1, 1, 1, $player));
+        echo "Downwards: " . (self::count_consecutive_disks($board, $column - 1, $row + 1, -1, 1, $player)
+                        + self::count_consecutive_disks($board, $column + 1, $row - 1, 1, -1, $player));
 
         // Determine if at least 3 other disks are adjacent to this one.
-        return ((self::count_consecutive_disks($board, $column, $row, -1, 0, $player)
-                + self::count_consecutive_disks($board, $column, $row, 1, 0, $player) >= self::NUM_CONSECUTIVE - 1)
-                or (self::count_consecutive_disks($board, $column, $row, 0, -1, $player)
-                        + self::count_consecutive_disks($board, $column, $row, 0, 1, $player) >= self::NUM_CONSECUTIVE - 1)
-                or (self::count_consecutive_disks($board, $column, $row, -1, -1, $player)
-                        + self::count_consecutive_disks($board, $column, $row, 1, 1, $player) >= self::NUM_CONSECUTIVE - 1)
-                or (self::count_consecutive_disks($board, $column, $row, -1, 1, $player)
-                        + self::count_consecutive_disks($board, $column, $row, 1, -1, $player) >= self::NUM_CONSECUTIVE - 1));
+        return ((self::count_consecutive_disks($board, $column - 1, $row, -1, 0, $player) // Horizontal check.
+                + self::count_consecutive_disks($board, $column + 1, $row, 1, 0, $player) >= self::NUM_CONSECUTIVE - 1)
+              or (self::count_consecutive_disks($board, $column, $row - 1, 0, -1, $player) // Vertical check.
+                + self::count_consecutive_disks($board, $column, $row + 1, 0, 1, $player) >= self::NUM_CONSECUTIVE - 1)
+              or (self::count_consecutive_disks($board, $column - 1, $row, -1, -1, $player) // Upwards (/) check.
+                + self::count_consecutive_disks($board, $column + 1, $row + 1, 1, 1, $player) >= self::NUM_CONSECUTIVE - 1)
+              or (self::count_consecutive_disks($board, $column - 1, $row + 1, -1, 1, $player) // Downwards (\) check.
+                + self::count_consecutive_disks($board, $column + 1, $row - 1, 1, -1, $player) >= self::NUM_CONSECUTIVE - 1));
     }
 
     private static function count_consecutive_disks($board, $col, $row, $dx, $dy, $player) {
-        if ($board[$col][$row] != $player) {
+        // No consecutive disks if $col, $row out of bounds or the piece on the board is not the player's
+        if ($col < 0 or $col >= self::BOARD_WIDTH
+                or $row < 0 or $row >= count($board[$col])
+                or $board[$col][$row] != $player) {
             return 0;
-        } else if ($col + $dx >= 0 and $col + $dx < self::BOARD_WIDTH) {
+        }
+        
+        if ($col + $dx >= 0 and $col + $dx < self::BOARD_WIDTH) {
             // Get the height of the specified column. Should always be <= BOARD_HEIGHT
             $i = count($board[$col + $dx]);
             if ($row + $dy >= 0 and $row + $dy < $i) {
-                return 1 + count_consecutive_disks($board, $col + $dx, $row + $dy, $dx, $dy, $player);
+                return 1 + self::count_consecutive_disks($board, $col + $dx, $row + $dy, $dx, $dy, $player);
             }
         }
+        // If the next adjacent piece going in this direction goes out of bounds, return only one.
         return 1;
     }
 
