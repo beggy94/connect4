@@ -28,19 +28,32 @@ class Arcade extends CI_Controller {
         $user = $_SESSION['user'];
          
         $this->load->model('user_model');
+        $this->load->model('match_model');
         $this->load->model('invite_model');
-        
-        $user = $this->user_model->get($user->login);
-        $invite = $this->invite_model->get($user->invite_id);
          
         // start transactional mode
         $this->db->trans_begin();
-         
-        // change status of invitation to REJECTED
-        $this->invite_model->updateStatus($invite->id,Invite::REJECTED);
         
-        // update status
-        $this->user_model->updateStatus($user->id,User::AVAILABLE);
+        // If the user is in a match that has been completed, just make the user available.
+        $user = $this->user_model->get($user->login);
+        if ($user->user_status_id == User::PLAYING) {
+            $match = $this->match_model->get($user->match_id);
+        
+            if ($match->match_status_id != Match::ACTIVE) {
+                // The game was completed.
+                $this->user_model->updateStatus($user->id, User::AVAILABLE);
+            }
+        } else if ($user->user_status_id != User::AVAILABLE) {
+            // If the user isn't available and visiting the lobby, assume that they have left the game.
+            // Invalidate the invite, telling the other player that this player has either declined or left.
+            $invite = $this->invite_model->get($user->invite_id);
+            
+            // change status of invitation to REJECTED
+            $this->invite_model->updateStatus($invite->id,Invite::REJECTED);
+            
+            // update status
+            $this->user_model->updateStatus($user->id,User::AVAILABLE);
+        }
          
         if ($this->db->trans_status() === FALSE)
             goto transactionerror;
