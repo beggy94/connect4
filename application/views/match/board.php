@@ -17,6 +17,9 @@ Hello <?= $user->fullName() ?>  <?= anchor('account/logout','(Logout)') ?>
 if (isset($board)) {
     echo "<section id='game-area'>";
     $this->load->view("match/_board_view", array("board" => $board));
+    if ($status == 'waiting') {
+        echo "<p>Your game will begin once " . $otherUser->fullName() . " has accepted.</p>";
+    }
     echo "</section>";
 }
 ?>

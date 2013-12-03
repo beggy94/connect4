@@ -25,12 +25,41 @@ class Arcade extends CI_Controller {
         $data['user']=$_SESSION['user'];
         
         // TODO: Eject the user from any matches they may have been in.
+        $user = $_SESSION['user'];
+         
+        $this->load->model('user_model');
+        $this->load->model('invite_model');
+        
+        $user = $this->user_model->get($user->login);
+        $invite = $this->invite_model->get($user->invite_id);
+         
+        // start transactional mode
+        $this->db->trans_begin();
+         
+        // change status of invitation to REJECTED
+        $this->invite_model->updateStatus($invite->id,Invite::REJECTED);
+        
+        // update status
+        $this->user_model->updateStatus($user->id,User::AVAILABLE);
+         
+        if ($this->db->trans_status() === FALSE)
+            goto transactionerror;
+         
+        // if all went well commit changes
+        $this->db->trans_commit();
+         
+        $this->load->view("template" ,$data);
+        return;
+         
+        // something went wrong
+        transactionerror:
+        $this->db->trans_rollback();
         
         if (isset($_SESSION['errmsg'])) {
             $data['errmsg']=	$_SESSION['errmsg'];
             unset($_SESSION['errmsg']);
         }
-        $this->load->view("template" ,$data);
+        
     }
 
     function getAvailableUsers() {

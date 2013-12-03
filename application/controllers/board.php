@@ -71,6 +71,9 @@ class Board extends CI_Controller {
             $otherUser = $this->user_model->getFromId($invite->user2_id);
             $data["match_status"] = Match::ACTIVE;
             $data["chip_color"] = "red";
+            $data["board"] = new Board_model();
+            $data["board"]->initialize_columns(Match::BOARD_WIDTH);
+            $data["player_no"] = Board_model::P1;
         }
         else if ($user->user_status_id == User::PLAYING) {
             $match = $this->match_model->get($user->match_id);
