@@ -70,30 +70,45 @@ class Account extends CI_Controller {
         session_destroy();
         redirect('account/index', 'refresh'); //Then we redirect to the index page again
     }
+    
+    function captchaImage() {
+        $this->load->library("securimage");
+        $this->securimage->show();
+    }
 
     function newForm() {
         $data["main"] = "account/newForm";
         $data["title"] = "Register - Connect4";
-        $data["script"] = "js/arcade/account.js";
+        $data["script"] = "account/_js";
+        $data["data"] = $data;
         
         $this->load->view("template", $data);
+    }
+    
+    function _verifySecurimage($input) {
+        $this->load->library("securimage");
+        return $this->securimage->check($input);
     }
 
     function createNew() {
         
         $this->load->library('form_validation');
+        $this->load->library("securimage");
         $this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.login]');
         $this->form_validation->set_rules('password', 'Password', 'required');
         $this->form_validation->set_rules('first', 'First', "required");
         $this->form_validation->set_rules('last', 'last', "required");
         $this->form_validation->set_rules('email', 'Email', "required|is_unique[user.email]");
+        $this->form_validation->set_rules("imagecode", "Captcha", "required|callback__verifySecurimage");
+        $this->form_validation->set_message('_verifySecurimage', 'Incorrect value for %s. Please try again.');
 
          
         if ($this->form_validation->run() == FALSE)
         {
             $data["main"] = "account/newForm";
             $data["title"] = "Register - Connect4";
-            $data["script"] = "js/arcade/account.js";
+            $data["script"] = "account/_js";
+            $data["data"] = $data;
             
             $this->load->view("template", $data);
         }

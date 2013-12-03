@@ -19,6 +19,10 @@
 	echo form_label('Email');
 	echo form_error('email');
 	echo form_input('email',set_value('email'),"required");
+	echo "<h3>Are you human?</h3>";
+	echo img("account/captchaImage", TRUE);
+	echo form_input("imagecode", "", "id='imagecode' required");
+	echo form_error('imagecode');
 	echo form_submit('submit', 'Register');
 	echo form_close();
 ?>
