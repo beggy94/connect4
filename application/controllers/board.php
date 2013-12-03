@@ -34,6 +34,7 @@ class Board extends CI_Controller {
         if ($user->user_status_id == User::WAITING) {
             $invite = $this->invite_model->get($user->invite_id);
             $otherUser = $this->user_model->getFromId($invite->user2_id);
+            $data["match_status"] = Match::ACTIVE;
         }
         else if ($user->user_status_id == User::PLAYING) {
             $match = $this->match_model->get($user->match_id);
@@ -44,6 +45,7 @@ class Board extends CI_Controller {
                 $otherUser = $this->user_model->getFromId($match->user1_id);
                 $data["player_no"] = 2;
             }
+            $data["match_status"] = $match->match_status;
             $data["board"] = unserialize(base64_decode($match->board_state));
                 array(array(0,1,0,1,1,0), 
                        array(0),
@@ -56,6 +58,7 @@ class Board extends CI_Controller {
          
         $data['user']=$user;
         $data['otherUser']=$otherUser;
+        
          
         switch($user->user_status_id) {
             case User::PLAYING:

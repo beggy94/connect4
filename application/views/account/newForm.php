@@ -9,6 +9,7 @@
 			}
 		</style>
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="<?= base_url("js/arcade/account.js") ?>"></script>
 		<script>
 			function checkPassword() {
 				var p1 = $("#pass1"); 

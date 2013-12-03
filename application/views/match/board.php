@@ -55,6 +55,15 @@
 			        window.location.href = "<?= base_url("arcade/index") ?>";
 			    });
 			});
+
+		    <?php for ($i = 0; $i < count($board); $i++) { ?>
+		        $('#insert-disk-<?= $i ?>').click(function() {
+		            var url = "<?= base_url("board/drop_disk/$i") ?>";
+		            $.post(url, null, function(data, status, jqXHR) {
+		                window.location.href = "<?= current_url() ?>";
+		            });
+		        });
+		    <?php } ?>
 		});
 	
 	</script>
@@ -83,9 +92,9 @@
 	    $i = 0;
 	    foreach ($board as $column) {
             $column_style = count($column) >= 6 ? "full-column" : "";
-            echo "<th class='$column_style chip-$chip_color'>" . anchor(base_url("board/drop_disk/$i"), "$chip_color $column_style") . "</th>";
+            echo "<th id='insert-disk-$i' class='$column_style chip-$chip_color'>" . "$chip_color $column_style" . "</th>";
             $i++;
-        }
+        }    
         ?>
 	    </tr>
 	    <?php
