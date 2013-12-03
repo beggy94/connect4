@@ -44,6 +44,8 @@ class Board extends CI_Controller {
             $data["board"] = new Board_model(Match::BOARD_WIDTH);
         }
         
+        $data["data"] = $data;
+        
         $this->load->view("match/_board_view", $data);
     }
 
@@ -101,6 +103,8 @@ class Board extends CI_Controller {
                 $data['status'] = 'waiting';
                 break;
         }
+        
+        $data["data"] = $data;
 
         $this->load->view("template", $data);
     }
@@ -224,26 +228,35 @@ class Board extends CI_Controller {
         if (is_null($match)) {
             $errormsg = "Match does not exist.";
             goto error;
+        } else if ($match->match_status_id != Match::ACTIVE) {
+            $errormsg = "The match is over: no more moves can be played.";
+            goto error;
         }
         
         if ($match->user1_id == $user->id) {
             if ($match->drop_disk(Board_model::P1, $column)) {
                 $msg = "P1 dropped disk into column $column.";
+            } else {
+                $errormsg = "It is not your turn.";
+                goto error;
             }
         }
         else {
             if ($match->drop_disk(Board_model::P2, $column)) {
                 $msg = "P2 dropped disk into column $column.";
+            } else {
+                $errormsg = "It is not your turn.";
+                goto error;
             }
         }
         
-//         if ($match->check_victory_state($column)) {
-//             // If the chip at the top of this column connects four.
-//             $msg .= $user->fullName() . " has won the game!";
+        if ($match->check_victory_state($column)) {
+            // If the chip at the top of this column connects four.
+            $msg .= "\n" . $user->fullName() . " has won the game!";
             
-//             $win_state = ($match->user1_id == $user->id ? Match::U1WON : Match::U2WON);
-//             $this->match_model->updateStatus($match->id, $win_state);
-//         }
+            $win_state = ($match->user1_id == $user->id ? Match::U1WON : Match::U2WON);
+            $this->match_model->updateStatus($match->id, $win_state);
+        }
         
         $this->match_model->updateBoard($match->id, $match->board_state);
         $this->match_model->updateMsgU1($match->id, $msg);

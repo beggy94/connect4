@@ -68,7 +68,12 @@ $(function(){
 	        if (!$(this).hasClass("full-column")) {
 	            var url = "<?= base_url("board/dropDisk/$i") ?>";
 	            $.post(url, null, function(data, status, jqXHR) {
-	                $("#game-area").load("<?= base_url("board/getGameBoard")?>");
+	                var response = jQuery.parseJSON(data);
+	                if (response.status == 'success') {
+	                    $("#game-area").load("<?= base_url("board/getGameBoard")?>");
+	                } else {
+	                    alert(response.message);
+	                }
 	            });
 	        }
         });

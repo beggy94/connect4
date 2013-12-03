@@ -1,7 +1,12 @@
-<?php if ($player_no == $board->player_turn) {
+<?php if (($match_status == Match::U1WON and $player_no == Board_model::P1) or 
+        ($match_status == Match::U2WON and $player_no == Board_model::P2)) {
+    echo "<h3>Connect 4! You won!</h3>";
+} else if ($match_status != Match::ACTIVE) {
+    echo "<h3>The game is over! You lost.</h3>";
+} else if ($player_no == $board->player_turn) {
     echo "<h3>It is your turn.</h3>";
 } else {
-    echo "<h3>Waiting for the other player.</h3>";
+    echo "<h3>Waiting for the other player to make a move..</h3>";
 } ?>
 <table class="game-board">
     <tr>

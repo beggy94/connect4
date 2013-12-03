@@ -42,7 +42,7 @@ class Match {
         if ($this->match_status_id == self::ACTIVE) {
             $board = unserialize(base64_decode($this->board_state));
             
-            if (!$board->player_turn != $player) {
+            if ($board->player_turn != $player) {
                 return FALSE;
             }           
              	
@@ -66,7 +66,7 @@ class Match {
      * @param unknown $board
      * @param unknown $column
      */
-    public static function check_victory_state($column) {
+    public function check_victory_state($column) {
         $board = unserialize(base64_decode($this->board_state))->columns;
         
         $row = count($board[$column]) - 1;
