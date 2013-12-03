@@ -1,4 +1,4 @@
-<h1>Password Recovery</h1>
+<h2>Password Recovery</h2>
 
 <p>Please check your email for your new password.</p>
 

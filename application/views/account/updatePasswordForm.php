@@ -1,4 +1,4 @@
-<h1>Change Password</h1>
+<h2>Change Password</h2>
 <?php 
 	if (isset($errorMsg)) {
 		echo "<p>" . $errorMsg . "</p>";

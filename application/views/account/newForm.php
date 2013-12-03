@@ -1,4 +1,4 @@
-<h1>New Account</h1>
+<h2>New Account</h2>
 <?php 
 	echo form_open('account/createNew');
 	echo form_label('Username'); 

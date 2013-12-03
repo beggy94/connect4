@@ -35,7 +35,7 @@ class Board extends CI_Controller {
                 $otherUser = $this->user_model->getFromId($match->user1_id);
                 $data["player_no"] = Board_model::P2;
             }
-            $data["chip_color"] = ($data["player_no"] == 1 ? "red" : "black");
+            $data["chip_color"] = ($data["player_no"] == 0 ? "red" : "black");
             $data["match_status"] = $match->match_status_id;
             $data["board"] = unserialize(base64_decode($match->board_state));
         } else {
@@ -70,7 +70,7 @@ class Board extends CI_Controller {
             $invite = $this->invite_model->get($user->invite_id);
             $otherUser = $this->user_model->getFromId($invite->user2_id);
             $data["match_status"] = Match::ACTIVE;
-            $data["chip_color"] = ($player_no == 1 ? "red" : "black");
+            $data["chip_color"] = "red";
         }
         else if ($user->user_status_id == User::PLAYING) {
             $match = $this->match_model->get($user->match_id);
@@ -81,7 +81,7 @@ class Board extends CI_Controller {
                 $otherUser = $this->user_model->getFromId($match->user1_id);
                 $data["player_no"] = Board_model::P2;
             }
-            $data["chip_color"] = ($data["player_no"] == 1 ? "red" : "black");
+            $data["chip_color"] = ($data["player_no"] == 0 ? "red" : "black");
             $data["match_status"] = $match->match_status_id;
             $data["board"] = unserialize(base64_decode($match->board_state));
         }
@@ -218,18 +218,29 @@ class Board extends CI_Controller {
         
         $match = $this->match_model->getExclusive($user->match_id);
         
+        if (is_null($match)) {
+            $errormsg = "Match does not exist.";
+            goto error;
+        }
+        
         if ($match->user1_id == $user->id) {
-            $msg = "P1 dropped disk into column $column.";
             if ($match->drop_disk(Board_model::P1, $column)) {
-                $msg .= "\nP1 won the game!";
+                $msg = "P1 dropped disk into column $column.";
             }
         }
         else {
-            $msg = "P2 dropped disk into column $column.";
             if ($match->drop_disk(Board_model::P2, $column)) {
-                $msg .= "\nP2 won the game!";
+                $msg = "P2 dropped disk into column $column.";
             }
         }
+        
+//         if ($match->check_victory_state($column)) {
+//             // If the chip at the top of this column connects four.
+//             $msg .= $user->fullName() . " has won the game!";
+            
+//             $win_state = ($match->user1_id == $user->id ? Match::U1WON : Match::U2WON);
+//             $this->match_model->updateStatus($match->id, $win_state);
+//         }
         
         $this->match_model->updateBoard($match->id, $match->board_state);
         $this->match_model->updateMsgU1($match->id, $msg);

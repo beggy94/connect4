@@ -1,53 +1,84 @@
+ @font-face {
+ 	font-family: "_Big_Bottom";
+    src: url("fonts/Big_Bottom_Typeface_Normal.ttf");
+}
+@font-face {
+	font-family: "_A bit sketchy";
+	src: url("fonts/sketchy.ttf");
+}
+ 
  body{
- 	background-image:url('../images/dcs_logo.png');
-	background-repeat:no-repeat;
-	background-size:200px;
     font-family: Arial, Verdana, sans-serif;
     margin:0;
     padding:0;
+    font-size: 0.9em;
+    background: #FDFDFD;
  }
   
  
  input,label {
  	display: block;
+ 	margin: 5px;
  }
- 
  
  h1 {
- 	font-size:2em;
- 	color: green;
+ 	font-family: "_A bit sketchy";
+ 	font-size: 54pt;
+ 	margin: 0 auto;
+ 	padding: 0;
+ 	width: 1024px;
+ 	color: gold;
+ 	text-shadow: -1px 1px 0 #444;
+ 	font-weight: normal;
  }
  
- h2{
- 	font-size:1em;
- 	color: blue;
+ h2 {
+ 	font-size: 18pt;
+ 	color: #222;
+ 	font-family: "_Big_Bottom";
  }
+ 
+ header {
+ 	margin: 0;
+ 	padding: 0;
+ 	border: solid #DDDDDD 1px;
+ 	background: #EEEEEE;
+ }
+ 
+table.game-board {
+	background: radial-gradient(yellow, gold); 
+}
 
- #header{
-    font-size:12px;
-	width: 700px;
-	height: 50px;
- }
+.game-board td {
+	border: solid gold 1px;
+	width: 100px;
+	height: 100px;
+}
+
+.game-board td div {
+	border-radius: 50px;
+	height: 100px;
+	width: 100px;
+}
+
+.empty-square {
+	background-color: #FDFDFD;
+	box-shadow: 1px 1px 2px #444 inset;
+}
+
+.chip-red {
+	background: radial-gradient(red, #DD1111);
+	box-shadow: 1px 1px 2px #644 inset;
+}
+
+.chip-black {
+	background: radial-gradient(#444444, #333333);
+}
  
- #header > h1 {
- 		text-align:center
- }
- 
- #nav{
- 	padding: 5pt;
-	position: absolute;	
-	width:130px;
-	height: 800px;
-	font-size: 10pt;
-    border:1px solid #31363E;
-    background: lightgray;
- }
- 
- #main{
-	margin-left:160px;
-    width:540px;
-    height:800px;
-	background: white;
+ .container {
+ 	width: 960px;
+ 	margin: 0 auto;
+ 	padding: 1em 0;
  }
 
 

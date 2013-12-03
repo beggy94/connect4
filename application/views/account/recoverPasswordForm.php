@@ -1,4 +1,4 @@
-<h1>Recover Password</h1>
+<h2>Recover Password</h2>
 <?php 
 	if (isset($errorMsg)) {
 		echo "<p>" . $errorMsg . "</p>";

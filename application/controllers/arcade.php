@@ -15,8 +15,7 @@ class Arcade extends CI_Controller {
             redirect('account/loginForm', 'refresh'); //Then we redirect to the index page again
          
         return call_user_func_array(array($this, $method), $params);
-    }
-     
+    }     
 
     function index() {
         $data["main"] = "arcade/mainPage";
@@ -24,6 +23,8 @@ class Arcade extends CI_Controller {
         $data["script"] = "arcade/_js";
         $data["data"] = $data;
         $data['user']=$_SESSION['user'];
+        
+        // TODO: Eject the user from any matches they may have been in.
         
         if (isset($_SESSION['errmsg'])) {
             $data['errmsg']=	$_SESSION['errmsg'];

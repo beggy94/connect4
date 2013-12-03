@@ -13,6 +13,7 @@
 	        <?php $this->load->view("header"); ?>
 	    </header>
 	    <div class="container">
+	        <?= anchor(base_url(), "Home") ?>
 	        <div id="main">
 	            <?php $this->load->view($main); ?>
 	        </div>

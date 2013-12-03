@@ -1,4 +1,4 @@
-<h1>Game Area</h1>
+<h2>Game Area</h2>
 
 <div>
 Hello <?= $user->fullName() ?>  <?= anchor('account/logout','(Logout)') ?>  

@@ -1,4 +1,4 @@
-<h1>Connect 4 Lobby</h1>
+<h2>Lobby</h2>
 
 <div>
 Hello <?= $user->fullName() ?>  <?= anchor('account/logout','(Logout)') ?>  <?= anchor('account/updatePasswordForm','(Change Password)') ?>

@@ -30,7 +30,7 @@ class Match {
 
     /**
      * Drop the corresponding player's disk into the indicated column, and
-     * return whether this move has caused the player to win the game.
+     * return whether this move was successfully completed.
      * @param int $player
      * @param int $column
      */
@@ -38,8 +38,6 @@ class Match {
         if ($column < 0 or $column >= self::BOARD_WIDTH) {
             return FALSE;
         }
-
-        $win = FALSE;
 
         if ($this->match_status_id == self::ACTIVE) {
             $board = unserialize(base64_decode($this->board_state));
@@ -51,16 +49,15 @@ class Match {
             if (count($board->columns[$column]) < self::BOARD_HEIGHT) {
                 // Can only fit 6 disks per column.
                 $board->columns[$column][] = $player;
-
-                $win = self::check_victory_state($board->columns, $column);
             }
             
+            // Alternate player's turn.
             $board->player_turn = ($board->player_turn == Board_model::P1) ? Board_model::P2 : Board_model::P1;
             	
             $this->board_state = base64_encode(serialize($board));
         }
 
-        return $win;
+        return TRUE;
     }
 
     /**
@@ -69,7 +66,9 @@ class Match {
      * @param unknown $board
      * @param unknown $column
      */
-    private static function check_victory_state($board, $column) {
+    public static function check_victory_state($column) {
+        $board = unserialize(base64_decode($this->board_state))->columns;
+        
         $row = count($board[$column]) - 1;
         echo "Column: " . $column;
         echo "Row: " . $row;

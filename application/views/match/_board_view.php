@@ -1,7 +1,7 @@
 <?php if ($player_no == $board->player_turn) {
-    echo "<h2>It is your turn.</h2>";
+    echo "<h3>It is your turn.</h3>";
 } else {
-    echo "<h2>Waiting for the other player.</h2>";
+    echo "<h3>Waiting for the other player.</h3>";
 } ?>
 <table class="game-board">
     <tr>
@@ -20,9 +20,10 @@
         echo "<tr>";
         foreach ($board->columns as $column) {
             if (count($column) > $i) {
-                echo "<td class='p$column[$i]'>$column[$i]</td>";
+                $color = $column[$i] == 1 ? "black" : "red";
+                echo "<td class='p$column[$i]'><div class='chip-$color'></div></td>";
             } else {
-                echo "<td class='empty-square'>Empty</td>";
+                echo "<td><div class='empty-square'></div></td>";
             }
         }
         echo "</tr>";

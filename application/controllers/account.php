@@ -139,7 +139,8 @@ class Account extends CI_Controller {
     function updatePasswordForm() {
         $data["main"] = "account/updatePasswordForm";
         $data["title"] = "Update Password - Title";
-        $data["script"] = "js/arcade/account.js";
+        $data["script"] = "account/_js";
+        $data["data"] = $data;
         
         $this->load->view("template", $data);
     }
@@ -147,7 +148,8 @@ class Account extends CI_Controller {
     function updatePassword() {
         $data["main"] = "account/updatePasswordForm";
         $data["title"] = "Update Password - Title";
-        $data["script"] = "js/arcade/account.js";
+        $data["script"] = "account/_js";
+        $data["data"] = $data;
         
         $this->load->library('form_validation');
         $this->form_validation->set_rules('oldPassword', 'Old Password', 'required');

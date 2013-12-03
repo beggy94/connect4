@@ -1,4 +1,4 @@
-<h1>Login</h1>
+<h2>Login</h2>
 <?php 
 	if (isset($errorMsg)) {
 		echo "<p>" . $errorMsg . "</p>";
