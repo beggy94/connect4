@@ -54,14 +54,6 @@ $(function(){
 		return false;
 	});
 
-	$('.leave-game').click(function() {
-		// TODO: Make use of board/leaveGame and have it also notify the other player.
-	    var url = "<?= base_url("arcade/declineInvitation") ?>";
-	    $.post(url, null, function(data, status, jqXHR) {
-	        window.location.href = "<?= base_url("arcade/index") ?>";
-	    });
-	});
-
 	<?php if (isset($board)) { ?>
         <?php for ($i = 0; $i < count($board->columns); $i++) { ?>
         $("#game-area").on("click", "#insert-disk-<?= $i ?>", function() {

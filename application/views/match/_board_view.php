@@ -3,18 +3,20 @@
     echo "<h3>Connect 4! You won!</h3>";
 } else if ($match_status != Match::ACTIVE) {
     echo "<h3>The game is over! You lost.</h3>";
+} else if ($status == "waiting") {
+    echo "<h3>The game hasn't started yet.</h3>";
 } else if ($player_no == $board->player_turn) {
     echo "<h3>It is your turn.</h3>";
 } else {
-    echo "<h3>Waiting for the other player to make a move..</h3>";
+    echo "<h3>Waiting for the other player to make a move.</h3>";
 } ?>
 <table class="game-board">
     <tr>
     <?php
     $i = 0;
     foreach ($board->columns as $column) {
-        $column_style = count($column) >= 6 ? "full-column" : "";
-        echo "<th id='insert-disk-$i' class='$column_style chip-$chip_color'>" . "$chip_color $column_style" . "</th>";
+        $column_style = ($status != "playing" or count($column) >= 6 or $player_no != $board->player_turn or $match_status != Match::ACTIVE)  ? "no-click" : "";
+        echo "<th id='insert-disk-$i' class='$column_style chip-$chip_color'><div class='chip-$chip_color $column_style'></div></th>";
         $i++;
     }    
     ?>

@@ -1,1 +1,1 @@
-<?php
+&copy;2013 Stephen Tsimidis

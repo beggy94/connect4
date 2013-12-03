@@ -16,7 +16,7 @@
  }
   
  
- input,label {
+ input,label, textarea {
  	display: block;
  	margin: 5px;
  }
@@ -46,13 +46,36 @@
  }
  
 table.game-board {
-	background: radial-gradient(yellow, gold); 
+	background: radial-gradient(yellow, gold);
+	margin-top: 50px;
 }
 
 .game-board td {
 	border: solid gold 1px;
 	width: 100px;
 	height: 100px;
+}
+
+.game-board th {
+	background: linear-gradient(#EE9011, #BB5500);
+	height: 10px;
+	position: relative;
+}
+
+.game-board th div {
+	height: 50px;
+	width: 100px;
+	border-radius: 50px 50px 0 0;
+	position: absolute;
+	margin-top: -45px;
+}
+
+.game-board th div:hover {
+	cursor: pointer;
+}
+
+.game-board th div.no-click {
+	display: none;	
 }
 
 .game-board td div {
@@ -80,5 +103,18 @@ table.game-board {
  	margin: 0 auto;
  	padding: 1em 0;
  }
+ 
+ .chat-box {
+ 	float: right;
+ 	width: 120px;
+ }
 
+footer {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	background: linear-gradient(#EEEEEE, #DDDDDD);
+	padding: 1em;
+	border-top: solid #BBBBBB 1px;
+}
 

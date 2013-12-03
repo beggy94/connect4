@@ -13,6 +13,20 @@ Hello <?= $user->fullName() ?>  <?= anchor('account/logout','(Logout)') ?>
 ?>
 </div>
 
+<aside class="chat-box">
+<?php 
+	echo "<h3>Chatroom</h3>";
+	echo form_textarea('conversation');
+	
+	echo form_open();
+	echo form_input('msg');
+	echo form_submit('Send','Send');
+	echo form_close();
+	echo anchor(base_url(), "Leave Game");
+	
+?>
+</aside>
+
 <?php
 if (isset($board)) {
     echo "<section id='game-area'>";
@@ -22,16 +36,4 @@ if (isset($board)) {
     }
     echo "</section>";
 }
-?>
-	
-<?php 
-	
-	echo form_textarea('conversation');
-	
-	echo form_open();
-	echo form_input('msg');
-	echo form_submit('Send','Send');
-	echo form_close();
-	echo anchor(current_url() . "#", "Leave Game", "class='leave-game'");
-	
 ?>

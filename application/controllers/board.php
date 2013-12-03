@@ -38,9 +38,11 @@ class Board extends CI_Controller {
             $data["chip_color"] = ($data["player_no"] == 0 ? "red" : "black");
             $data["match_status"] = $match->match_status_id;
             $data["board"] = unserialize(base64_decode($match->board_state));
+            $data["status"] = "playing";
         } else {
             // Show an empty dummy board.
             $data["match_status"] = Match::ACTIVE;
+            $data["status"] = "waiting";
             $data["board"] = new Board_model(Match::BOARD_WIDTH);
         }
         
