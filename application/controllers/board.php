@@ -16,9 +16,44 @@ class Board extends CI_Controller {
          
         return call_user_func_array(array($this, $method), $params);
     }
+    
+    function getGameBoard() {
+        $user = $_SESSION['user'];
+         
+        $this->load->model('user_model');
+        $this->load->model('invite_model');
+        $this->load->model('match_model');
+        
+        $user = $this->user_model->get($user->login);
+        
+        if ($user->user_status_id == User::PLAYING) {
+            $match = $this->match_model->get($user->match_id);
+            if ($match->user1_id == $user->id) {
+                $otherUser = $this->user_model->getFromId($match->user2_id);
+                $data["player_no"] = Board_model::P1;
+            } else {
+                $otherUser = $this->user_model->getFromId($match->user1_id);
+                $data["player_no"] = Board_model::P2;
+            }
+            $data["chip_color"] = ($data["player_no"] == 1 ? "red" : "black");
+            $data["match_status"] = $match->match_status_id;
+            $data["board"] = unserialize(base64_decode($match->board_state));
+        } else {
+            // Show an empty dummy board.
+            $data["match_status"] = Match::ACTIVE;
+            $data["board"] = new Board_model(Match::BOARD_WIDTH);
+        }
+        
+        $this->load->view("match/_board_view", $data);
+    }
 
 
     function index() {
+        $data["main"] = "match/board";
+        $data["title"] = "Playing Connect4!";
+        $data["script"] = "match/_js";
+        $data["data"] = $data;
+        
         $user = $_SESSION['user'];
          
         $this->load->model('user_model');
@@ -35,25 +70,20 @@ class Board extends CI_Controller {
             $invite = $this->invite_model->get($user->invite_id);
             $otherUser = $this->user_model->getFromId($invite->user2_id);
             $data["match_status"] = Match::ACTIVE;
+            $data["chip_color"] = ($player_no == 1 ? "red" : "black");
         }
         else if ($user->user_status_id == User::PLAYING) {
             $match = $this->match_model->get($user->match_id);
             if ($match->user1_id == $user->id) {
                 $otherUser = $this->user_model->getFromId($match->user2_id);
-                $data["player_no"] = 1;
+                $data["player_no"] = Board_model::P1;
             } else {
                 $otherUser = $this->user_model->getFromId($match->user1_id);
-                $data["player_no"] = 2;
+                $data["player_no"] = Board_model::P2;
             }
-            $data["match_status"] = $match->match_status;
+            $data["chip_color"] = ($data["player_no"] == 1 ? "red" : "black");
+            $data["match_status"] = $match->match_status_id;
             $data["board"] = unserialize(base64_decode($match->board_state));
-                array(array(0,1,0,1,1,0), 
-                       array(0),
-                       array(1),
-                       array(1,0),
-                       array(0,1),
-                       array(),
-                       array());// unserialize(base64_decode($match->board_state));
         }
          
         $data['user']=$user;
@@ -69,7 +99,7 @@ class Board extends CI_Controller {
                 break;
         }
 
-        $this->load->view('match/board',$data);
+        $this->load->view("template", $data);
     }
 
     function postMsg() {
@@ -110,6 +140,22 @@ class Board extends CI_Controller {
          
         error:
         echo json_encode(array('status'=>'failure','message'=>$errormsg));
+    }
+    
+    /**
+     * Encode whether there is an update available for the user in the session.
+     */
+    function getUpdateStatus() {
+        $user = $_SESSION['user'];
+        
+        $this->load->model('user_model');
+        $this->load->model('match_model');
+         
+        $user = $this->user_model->get($user->login);
+        
+        if ($user->user_status_id != User::PLAYING) {
+            return;
+        }
     }
 
     function getMsg() {
@@ -155,7 +201,7 @@ class Board extends CI_Controller {
         echo json_encode(array('status'=>'failure','message'=>$errormsg));
     }
     
-    function drop_disk($column) {
+    function dropDisk($column) {
         $this->load->model('user_model');
         $this->load->model('match_model');
         
@@ -174,13 +220,13 @@ class Board extends CI_Controller {
         
         if ($match->user1_id == $user->id) {
             $msg = "P1 dropped disk into column $column.";
-            if ($match->drop_disk(1, $column)) {
+            if ($match->drop_disk(Board_model::P1, $column)) {
                 $msg .= "\nP1 won the game!";
             }
         }
         else {
             $msg = "P2 dropped disk into column $column.";
-            if ($match->drop_disk(2, $column)) {
+            if ($match->drop_disk(Board_model::P2, $column)) {
                 $msg .= "\nP2 won the game!";
             }
         }
@@ -194,7 +240,6 @@ class Board extends CI_Controller {
             goto transactionerror;
         }
          
-        // if all went well commit changes
         $this->db->trans_commit();
          
         echo json_encode(array('status'=>'success','message'=>$msg));
@@ -207,7 +252,7 @@ class Board extends CI_Controller {
         echo json_encode(array('status'=>'failure','message'=>$errormsg));
     }
     
-    function leave_game() {
+    function leaveGame() {
         redirect("arcade/declineInvitation");
     }
 

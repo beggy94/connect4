@@ -3,9 +3,10 @@
 <html lang="en">
 	<head>
         <title><?= $title ?></title>
+        <link href="<?= base_url("css/template.css") ?>" rel="stylesheet" />
     	<script src="http://code.jquery.com/jquery-latest.js"></script>
-    	<script src="<?= base_url() ?>/js/jquery.timers.js"></script>
-    	<?php if (isset($script)) { ?><script src="<?= base_url($script) ?>"></script> <?php } ?>
+    	<script src="<?= base_url("js/jquery.timers.js") ?>"></script>
+    	<?php if (isset($script)) { ?><script><?php $this->load->view($script, $data) ?></script> <?php } ?>
 	</head>
 	<body>
 	    <header>

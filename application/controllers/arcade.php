@@ -19,12 +19,17 @@ class Arcade extends CI_Controller {
      
 
     function index() {
+        $data["main"] = "arcade/mainPage";
+        $data["title"] = "Lobby - Connect4";
+        $data["script"] = "arcade/_js";
+        $data["data"] = $data;
         $data['user']=$_SESSION['user'];
+        
         if (isset($_SESSION['errmsg'])) {
             $data['errmsg']=	$_SESSION['errmsg'];
             unset($_SESSION['errmsg']);
         }
-        $this->load->view('arcade/mainPage',$data);
+        $this->load->view("template" ,$data);
     }
 
     function getAvailableUsers() {

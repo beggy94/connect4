@@ -1,30 +1,13 @@
+<h1>Password Recovery</h1>
 
-<!DOCTYPE html>
+<p>Please check your email for your new password.</p>
 
-<html>
-<head>
-<style>
-input {
-	display: block;
+
+
+<?php 
+if (isset($errorMsg)) {
+	echo "<p>" . $errorMsg . "</p>";
 }
-</style>
 
-</head>
-<body>
-	<h1>Password Recovery</h1>
-
-	<p>Please check your email for your new password.</p>
-
-
-
-	<?php 
-	if (isset($errorMsg)) {
-		echo "<p>" . $errorMsg . "</p>";
-	}
-
-	echo "<p>" . anchor('account/index','Login') . "</p>";
-	?>
-</body>
-
-</html>
-
+echo "<p>" . anchor('account/index','Login') . "</p>";
+?>

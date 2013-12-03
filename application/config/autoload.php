@@ -112,7 +112,7 @@ $autoload['language'] = array();
 */ 
 
 //$autoload['model'] = array('MCats','MProducts','MOrders','MAdmins','MSizes','MColors', 'MPages', 'MSubscribers');
-$autoload['model'] = array('Invite','Match','User'); 
+$autoload['model'] = array('Invite', "Board_model", 'Match','User'); 
 
 
 /* End of file autoload.php */

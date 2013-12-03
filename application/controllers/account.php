@@ -21,10 +21,16 @@ class Account extends CI_Controller {
 
 
     function loginForm() {
-        $this->load->view('account/loginForm');
+        $data["title"] = "Log In - Connect4";
+        $data["main"] = "account/loginForm";
+        
+        $this->load->view("template", $data);
     }
 
     function login() {
+        $data["title"] = "Log In - Connect4";
+        $data["main"] = "account/loginForm";
+        
         $this->load->library('form_validation');
         $this->form_validation->set_rules('username', 'Username', 'required');
         $this->form_validation->set_rules('password', 'Password', 'required');
@@ -52,7 +58,7 @@ class Account extends CI_Controller {
             }
             else {
                 $data['errorMsg']='Incorrect username or password!';
-                $this->load->view('account/loginForm',$data);
+                $this->load->view('template',$data);
             }
         }
     }
@@ -66,10 +72,15 @@ class Account extends CI_Controller {
     }
 
     function newForm() {
-        $this->load->view('account/newForm');
+        $data["main"] = "account/newForm";
+        $data["title"] = "Register - Connect4";
+        $data["script"] = "js/arcade/account.js";
+        
+        $this->load->view("template", $data);
     }
 
     function createNew() {
+        
         $this->load->library('form_validation');
         $this->form_validation->set_rules('username', 'Username', 'required|is_unique[user.login]');
         $this->form_validation->set_rules('password', 'Password', 'required');
@@ -80,10 +91,17 @@ class Account extends CI_Controller {
          
         if ($this->form_validation->run() == FALSE)
         {
-            $this->load->view('account/newForm');
+            $data["main"] = "account/newForm";
+            $data["title"] = "Register - Connect4";
+            $data["script"] = "js/arcade/account.js";
+            
+            $this->load->view("template", $data);
         }
         else
         {
+            $data["main"] = "account/loginForm";
+            $data["title"] = "Log In - Connect4";
+            
             $user = new User();
 
             $user->login = $this->input->post('username');
@@ -104,18 +122,26 @@ class Account extends CI_Controller {
 
 
     function updatePasswordForm() {
-        $this->load->view('account/updatePasswordForm');
+        $data["main"] = "account/updatePasswordForm";
+        $data["title"] = "Update Password - Title";
+        $data["script"] = "js/arcade/account.js";
+        
+        $this->load->view("template", $data);
     }
 
     function updatePassword() {
+        $data["main"] = "account/updatePasswordForm";
+        $data["title"] = "Update Password - Title";
+        $data["script"] = "js/arcade/account.js";
+        
         $this->load->library('form_validation');
         $this->form_validation->set_rules('oldPassword', 'Old Password', 'required');
         $this->form_validation->set_rules('newPassword', 'New Password', 'required');
          
          
         if ($this->form_validation->run() == FALSE)
-        {
-            $this->load->view('account/updatePasswordForm');
+        {            
+            $this->load->view("template", $data);
         }
         else
         {
@@ -132,7 +158,7 @@ class Account extends CI_Controller {
             }
             else {
                 $data['errorMsg']="Incorrect password!";
-                $this->load->view('account/updatePasswordForm',$data);
+                $this->load->view("template", $data);
             }
         }
     }

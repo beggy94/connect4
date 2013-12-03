@@ -1,4 +1,5 @@
 <?php
+
 class Match {
     const ACTIVE = 1;
     const U1WON = 2;
@@ -20,16 +21,9 @@ class Match {
     // 1s belong to p2.
     public $board_state;
 
-    public function __construct() {
-        $this->initialize_board();
-    }
-
     public function initialize_board() {
-        $board = array();
-        // Initialize the board as array of 7 stacks, representing the columns.
-        for ($i = 0; $i < self::BOARD_WIDTH; $i++) {
-            $board[] = array();
-        }
+        $board = new Board_model();
+        $board->initialize_columns(self::BOARD_WIDTH);
 
         $this->board_state = base64_encode(serialize($board));
     }
@@ -42,20 +36,26 @@ class Match {
      */
     public function drop_disk($player, $column) {
         if ($column < 0 or $column >= self::BOARD_WIDTH) {
-            return false;
+            return FALSE;
         }
 
-        $win = false;
+        $win = FALSE;
 
         if ($this->match_status_id == self::ACTIVE) {
             $board = unserialize(base64_decode($this->board_state));
-            	
-            if (count($board[$column]) < self::BOARD_HEIGHT) {
+            
+            if (!$board->player_turn != $player) {
+                return FALSE;
+            }           
+             	
+            if (count($board->columns[$column]) < self::BOARD_HEIGHT) {
                 // Can only fit 6 disks per column.
-                $board[$column][] = $player;
+                $board->columns[$column][] = $player;
 
-                $win = self::check_victory_state($board, $column);
+                $win = self::check_victory_state($board->columns, $column);
             }
+            
+            $board->player_turn = ($board->player_turn == Board_model::P1) ? Board_model::P2 : Board_model::P1;
             	
             $this->board_state = base64_encode(serialize($board));
         }
