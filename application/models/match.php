@@ -70,25 +70,14 @@ class Match {
         $board = unserialize(base64_decode($this->board_state))->columns;
         
         $row = count($board[$column]) - 1;
-        echo "Column: " . $column;
-        echo "Row: " . $row;
         $player = $board[$column][$row];
-        
-        echo "Horizontally: " . (self::count_consecutive_disks($board, $column - 1, $row, -1, 0, $player)
-                + self::count_consecutive_disks($board, $column + 1, $row, 1, 0, $player));
-        echo "Vertically: " . (self::count_consecutive_disks($board, $column, $row - 1, 0, -1, $player)
-                + self::count_consecutive_disks($board, $column, $row + 1, 0, 1, $player));
-        echo "Upwards: " . (self::count_consecutive_disks($board, $column - 1, $row - 1, -1, -1, $player)
-                        + self::count_consecutive_disks($board, $column + 1, $row + 1, 1, 1, $player));
-        echo "Downwards: " . (self::count_consecutive_disks($board, $column - 1, $row + 1, -1, 1, $player)
-                        + self::count_consecutive_disks($board, $column + 1, $row - 1, 1, -1, $player));
 
         // Determine if at least 3 other disks are adjacent to this one.
         return ((self::count_consecutive_disks($board, $column - 1, $row, -1, 0, $player) // Horizontal check.
                 + self::count_consecutive_disks($board, $column + 1, $row, 1, 0, $player) >= self::NUM_CONSECUTIVE - 1)
               or (self::count_consecutive_disks($board, $column, $row - 1, 0, -1, $player) // Vertical check.
                 + self::count_consecutive_disks($board, $column, $row + 1, 0, 1, $player) >= self::NUM_CONSECUTIVE - 1)
-              or (self::count_consecutive_disks($board, $column - 1, $row, -1, -1, $player) // Upwards (/) check.
+              or (self::count_consecutive_disks($board, $column - 1, $row - 1, -1, -1, $player) // Upwards (/) check.
                 + self::count_consecutive_disks($board, $column + 1, $row + 1, 1, 1, $player) >= self::NUM_CONSECUTIVE - 1)
               or (self::count_consecutive_disks($board, $column - 1, $row + 1, -1, 1, $player) // Downwards (\) check.
                 + self::count_consecutive_disks($board, $column + 1, $row - 1, 1, -1, $player) >= self::NUM_CONSECUTIVE - 1));
